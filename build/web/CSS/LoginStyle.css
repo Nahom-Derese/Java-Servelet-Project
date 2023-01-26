@@ -1,0 +1,99 @@
+*{
+    outline: none;
+    border: none;
+    background-color: none;
+    margin: 0;
+    padding: 0;
+}
+body{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background-color: black;
+    background: url(/Image/AuthenticationBackground.jpg);
+    background-size: cover;
+    background-position: center;
+}
+.loginContainer{
+    border:1px solid white;
+    border-radius: 20px;
+    background-color: black;
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+    flex-direction: column;
+    height: 60vh;
+    width: 350px;
+    padding: 40px;
+}
+.loginContainer h3{
+    text-align: center;
+    margin-bottom: 50px;
+    font-size: 30px;
+
+}
+#LoginInput{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#LoginInput input{
+    margin-bottom: 20px;
+    width: 100%;
+}
+#LoginInput p{
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+}
+
+#LoginInput input[type="text"],input[type="password"]{
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    height: 40px;
+    background: transparent;
+    color: #fff;
+    font-size: 14px;
+}
+
+#LoginInput input[type="submit"]{
+    border: none;
+    outline: none;
+    height: 40px;
+    background:#fb2525;
+    color: #fff;
+    font-weight: 14px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+#LoginInput input[type="submit"]:hover{
+    cursor: pointer;
+    color: #000;
+    background-color: #ffc107;
+}
+#LoginInput a{
+    text-decoration: none;
+    font-size: 13px;
+    color: darkgrey;
+}
+
+#LoginInput a:hover{
+    color: #ffc107;
+}
+
+
+
+
+
+
+
+
+
+
+
