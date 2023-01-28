@@ -19,7 +19,7 @@ public class DB {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String url = "jdbc:mysql://localhost:3306/User";
             String user = "root";
-            this.connection = DriverManager.getConnection(url, user, "");
+            DB.connection = DriverManager.getConnection(url, user, "");
             System.out.println("DB Connection established......");
         } // If connection failed
         catch (SQLException | ClassNotFoundException ex) {
@@ -30,9 +30,9 @@ public class DB {
         
         try {
             // If DB Connection Established Check if the Database Exists
-            if (this.connection != null) {
+            if (DB.connection != null) {
                 System.out.println("Checking If The Database Exists ... ");
-                rs = this.connection.getMetaData().getCatalogs();
+                rs = DB.connection.getMetaData().getCatalogs();
                 while (rs.next()) {
                     String catalogs = rs.getString(1);
 
@@ -42,7 +42,7 @@ public class DB {
                     } // If the Database Doesn't Exist, Run the "CREATE database Airlines_DB"
                     else {
                         System.out.println("The Database " + dbName + " Doesn't Exist , Creating DB...");
-                        Statement stmt = this.connection.createStatement();
+                        Statement stmt = DB.connection.createStatement();
                         try{
                             stmt.execute("CREATE DATABASE " + dbName);
                             System.out.println("Database Created");
@@ -59,7 +59,7 @@ public class DB {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return this.connection;
+        return DB.connection;
     }
 
     private DB() {}
@@ -75,25 +75,32 @@ public class DB {
   
 
     void createTables(Connection db) {
+        // TABLE NAMES
+        final String tablePassenger = "Passenger";
+        final String tableFlight = "Flight";
+        final String tableAirplane = "Airplane";
+        final String tableReservation = "Reservation";
+        final String tableTicket = "Ticket";
+        final String tableAirline = "Airline";
         
+        // DB DATA TYPES
         final String idType = "INTEGER PRIMARY KEY AUTOINCREMENT";
         final String boolType = "BOOLEAN NOT NULL";
         final String integerType = "INTEGER NOT NULL";
-        final String nullabaleinteger = "INTEGER";
-        final String textType = "TEXT NOT NULL";
-        final String nullabaleText = "TEXT";
+        final String dateTime = "DATETIME";
+        final String textType = "VARCHAR(50)";
+        final String longText = "VARCHAR(60)";
         final String doubleType = "NUMERIC NOT NULL";
-        final Statement stmt = this.connection.createStatement();
         
         // CREATE TABLES IF THEY DON'T EXIST
         try{
-            
-            stmt.execute("PRAGMA foreign_keys = ON;");
-
-            stmt.execute("CREATE TABLE $tableSubject ( ${SubjectFields.id} $idType, ${SubjectFields.name} $textType, ${SubjectFields.stream} $textType)");
-            stmt.execute("CREATE TABLE $tableSubject ( ${SubjectFields.id} $idType, ${SubjectFields.name} $textType, ${SubjectFields.stream} $textType)");
-            stmt.execute("CREATE TABLE $tableSubject ( ${SubjectFields.id} $idType, ${SubjectFields.name} $textType, ${SubjectFields.stream} $textType)");
-            stmt.execute("CREATE TABLE $tableSubject ( ${SubjectFields.id} $idType, ${SubjectFields.name} $textType, ${SubjectFields.stream} $textType)");
+            final Statement stmt = DB.connection.createStatement();
+            stmt.execute(String.format("CREATE TABLE {} ( {} {}, {} {}, {} {})", tablePassenger, Passenger.PassengerFields.id, idType, Passenger.PassengerFields.creditCard, integerType, Passenger.PassengerFields.dateOfBirth, dateTime, Passenger.PassengerFields.email, textType, Passenger.PassengerFields.name, textType, Passenger.PassengerFields.password, textType, Passenger.PassengerFields.phoneNumber, textType));
+            stmt.execute(String.format("CREATE TABLE {} ( {} {}, {} {}, {} {})", tableFlight, Flight.id, ));
+            stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {})", tableAirplane, Airplane.id, ));
+            stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {})", tableReservation, Reservation.id, ));
+            stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {})", tableTicket, Ticket.id, ));
+            stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {})", tableAirline, Airline.id, ));
 
         }catch(SQLException e){
             System.out.println(String.format("Error : {0}", e));
