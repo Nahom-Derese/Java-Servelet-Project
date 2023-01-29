@@ -79,7 +79,7 @@ public class DB {
         final String tablePassenger = "Passenger";
         final String tableFlight = "Flight";
         final String tableAirplane = "Airplane";
-        final String tableReservation = "Reservation";
+        final String tableSchedule = "Schedule";
         final String tableTicket = "Ticket";
         final String tableAirline = "Airline";
         
@@ -95,12 +95,12 @@ public class DB {
         // CREATE TABLES IF THEY DON'T EXIST
         try{
             final Statement stmt = DB.connection.createStatement();
-            stmt.execute(String.format("CREATE TABLE {} ( {} {}, {} {}, {} {})", tablePassenger, Passenger.PassengerFields.id, idType, Passenger.PassengerFields.creditCard, integerType, Passenger.PassengerFields.dateOfBirth, dateTime, Passenger.PassengerFields.email, textType, Passenger.PassengerFields.name, textType, Passenger.PassengerFields.password, textType, Passenger.PassengerFields.phoneNumber, textType));
-            stmt.execute(String.format("CREATE TABLE {} ( {} {}, {} {}, {} {})", tableFlight, Flight.id, ));
-            stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {})", tableAirplane, Airplane.id, ));
-            stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {})", tableReservation, Reservation.id, ));
-            stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {})", tableTicket, Ticket.id, ));
-            stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {})", tableAirline, Airline.id, ));
+            stmt.execute(String.format("CREATE TABLE {} ( {} {}, {} {}, {} {}, {} {}, {} {}, {} {}, {} {} )", tablePassenger, Passenger.PassengerFields.id, idType, Passenger.PassengerFields.creditCard, integerType, Passenger.PassengerFields.dateOfBirth, dateTime, Passenger.PassengerFields.email, textType, Passenger.PassengerFields.name, textType, Passenger.PassengerFields.password, textType, Passenger.PassengerFields.phoneNumber, textType));
+            stmt.execute(String.format("CREATE TABLE {} ( {} {}, {} {}, {} {}, {} {}, {} {}, {} {}, {} {} )", tableFlight, Flight.FlightFields.AirlineId, idType, Flight.FlightFields.flightPrice, doubleType, Flight.FlightFields.flightFrom, textType, Flight.FlightFields.flightTo, textType, Flight.FlightFields.flightStartTime, dateTime, Flight.FlightFields.flightEndTime, dateTime, Flight.FlightFields.flightNumber , textType));
+            stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {}, {} {}, {} {}, {} {})", tableTicket, Ticket.TicketFields.ticket_id, textType, Ticket.TicketFields.flight_number, textType, Ticket.TicketFields.passenger_id, integerType, Ticket.TicketFields.purchase_date, dateTime, Ticket.TicketFields.seat_row, textType ));
+            stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {}, {} {})", tableSchedule, Schedule.ScheduleFields.flight, idType, Schedule.ScheduleFields.arrivalTime, integerType, Schedule.ScheduleFields.departureTime, integerType, Schedule.ScheduleFields.flightDay, dateTime));
+            // stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {})", tableAirplane, , ));
+            // stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {})", tableReservation, Reservation.id, ));
 
         }catch(SQLException e){
             System.out.println(String.format("Error : {0}", e));
