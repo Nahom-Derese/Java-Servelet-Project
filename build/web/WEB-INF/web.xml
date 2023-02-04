@@ -1,27 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app id="WebApp_ID" version="5.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:web="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd http://xmlns.jcp.org/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-    <servlet>
-        <servlet-name>a</servlet-name>
-        <servlet-class>com.Servlet_DB_connection.ForgotServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>a</servlet-name>
-        <url-pattern>/JSP/Forgot</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>Login</servlet-name>
-        <servlet-class>com.Servlet_DB_connection.LoginServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Login</servlet-name>
-        <url-pattern>/Login</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>SignUp</servlet-name>
-        <servlet-class>com.Servlet_DB_connection.SignUpServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>SignUp</servlet-name>
-        <url-pattern>/JSP/SignUp</url-pattern>
-    </servlet-mapping>
+<web-app id="WebApp_ID" 
+         version="5.0" 
+         xmlns="https://jakarta.ee/xml/ns/jakartaee" 
+         xmlns:web="http://xmlns.jcp.org/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd http://xmlns.jcp.org/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <display-name>Airlines Project</display-name>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
 </web-app>

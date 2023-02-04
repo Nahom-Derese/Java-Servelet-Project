@@ -1,15 +1,25 @@
-package Com.Database_Controller;
+package Com.db_controller;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.ibatis.jdbc.ScriptRunner;
 
 public class DB {
 
-    static final DB instance = new DB();
+    public static final DB instance = new DB();
 
     private static Connection connection;
-    private static String dbName = "Airlines_DB";
+    public static String dbName = "airlines_db";
+    final String tablePassenger = "Passenger";
+    final String tableFlight = "Flight";
+    final String tableSchedule = "Schedule";
+    final String tableTicket = "Ticket";
     private ResultSet rs = null;
 
     public Connection getconnection() {
@@ -17,7 +27,7 @@ public class DB {
         // Trying to Connect to MYSQL DATABASE ON LOCALHOST
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/User";
+            String url = "jdbc:mysql://localhost:3306/";
             String user = "root";
             DB.connection = DriverManager.getConnection(url, user, "");
             System.out.println("DB Connection established......");
@@ -29,6 +39,7 @@ public class DB {
 
         
         try {
+            boolean dbExists = false;
             // If DB Connection Established Check if the Database Exists
             if (DB.connection != null) {
                 System.out.println("Checking If The Database Exists ... ");
@@ -38,20 +49,24 @@ public class DB {
 
                     //  If the Database Exists, Great return the Connection
                     if (dbName.equals(catalogs)) {
-                        System.out.println("The Database " + dbName + " Exists !");
-                    } // If the Database Doesn't Exist, Run the "CREATE database Airlines_DB"
-                    else {
+                        dbExists = true;
+                        System.out.println("The Database " +  dbName + " Exists !");
+                        break;
+                    }
+                 } 
+                    // If the Database Doesn"t Exist, Run the "CREATE database Airlines_DB"
+                    if(!dbExists){
                         System.out.println("The Database " + dbName + " Doesn't Exist , Creating DB...");
                         Statement stmt = DB.connection.createStatement();
                         try{
                             stmt.execute("CREATE DATABASE " + dbName);
-                            System.out.println("Database Created");
+                            createTables(DB.connection, dbName);
+                            System.out.println("Database with Tables Created");
                         }
                         catch(SQLException e){
                             System.out.println("Error Creating Database");
                         }
                     }   
-                    }
                 }
              else {
                 System.out.println("Unable To Create Database Connection");
@@ -59,52 +74,64 @@ public class DB {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        try{
+            String url = "jdbc:mysql://localhost:3306/"+ dbName;
+            String user = "root";
+            String password = "";
+            Connection con = DriverManager.getConnection(url, user, password);
+            DB.connection = con;
+        }catch(Exception e){
+            System.err.println("DB NOT EXISTS!!");
+        }
         return DB.connection;
     }
 
     private DB() {}
-    
-    void close() {
+  
+    void createTables(Connection db, String dbName) throws SQLException, IOException {
+        String url = "jdbc:mysql://localhost:3306/"+ dbName;
+        String user = "root";
+        String password = "";
+        Connection con = DriverManager.getConnection(url, user, password);
+
+        
+        //Initialize the script runner
+        ScriptRunner sr = new ScriptRunner(con);
+        //Creating a reader object
+        Reader reader = new BufferedReader(new FileReader("DB.sql"));
+        //Running the script
+        sr.runScript(reader);
+        //Closing the reader object
+        reader.close();
+        //Closing the connection
+        sr.closeConnection();
+    }
+
+    void clearDB(){
+        try{
+            final Statement db = DB.connection.createStatement();
+            db.execute(String.format("DROP TABLE IF EXISTS {};", tablePassenger));
+            db.execute(String.format("DROP TABLE IF EXISTS {};", tableFlight));
+            db.execute(String.format("DROP TABLE IF EXISTS {};", tableTicket));
+            db.execute(String.format("DROP TABLE IF EXISTS {};", tableSchedule));
+
+            createTables(DB.connection, dbName);
+        }catch(SQLException e){
+            System.out.println(String.format("Error : {0}", e));
+        }catch(FileNotFoundException e){
+            System.out.println(String.format("Error : {0}", e));
+        }catch(IOException e){
+            System.out.println(String.format("Error : {0}", e));
+        }
+  }
+  
+    static void close() {
         final Connection db = instance.getconnection();
         try {
             db.close();
         } catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
-  }
-  
-
-    void createTables(Connection db) {
-        // TABLE NAMES
-        final String tablePassenger = "Passenger";
-        final String tableFlight = "Flight";
-        final String tableAirplane = "Airplane";
-        final String tableSchedule = "Schedule";
-        final String tableTicket = "Ticket";
-        final String tableAirline = "Airline";
-        
-        // DB DATA TYPES
-        final String idType = "INTEGER PRIMARY KEY AUTOINCREMENT";
-        final String boolType = "BOOLEAN NOT NULL";
-        final String integerType = "INTEGER NOT NULL";
-        final String dateTime = "DATETIME";
-        final String textType = "VARCHAR(50)";
-        final String longText = "VARCHAR(60)";
-        final String doubleType = "NUMERIC NOT NULL";
-        
-        // CREATE TABLES IF THEY DON'T EXIST
-        try{
-            final Statement stmt = DB.connection.createStatement();
-            stmt.execute(String.format("CREATE TABLE {} ( {} {}, {} {}, {} {}, {} {}, {} {}, {} {}, {} {} )", tablePassenger, Passenger.PassengerFields.id, idType, Passenger.PassengerFields.creditCard, integerType, Passenger.PassengerFields.dateOfBirth, dateTime, Passenger.PassengerFields.email, textType, Passenger.PassengerFields.name, textType, Passenger.PassengerFields.password, textType, Passenger.PassengerFields.phoneNumber, textType));
-            stmt.execute(String.format("CREATE TABLE {} ( {} {}, {} {}, {} {}, {} {}, {} {}, {} {}, {} {} )", tableFlight, Flight.FlightFields.AirlineId, idType, Flight.FlightFields.flightPrice, doubleType, Flight.FlightFields.flightFrom, textType, Flight.FlightFields.flightTo, textType, Flight.FlightFields.flightStartTime, dateTime, Flight.FlightFields.flightEndTime, dateTime, Flight.FlightFields.flightNumber , textType));
-            stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {}, {} {}, {} {}, {} {})", tableTicket, Ticket.TicketFields.ticket_id, textType, Ticket.TicketFields.flight_number, textType, Ticket.TicketFields.passenger_id, integerType, Ticket.TicketFields.purchase_date, dateTime, Ticket.TicketFields.seat_row, textType ));
-            stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {}, {} {})", tableSchedule, Schedule.ScheduleFields.flight, idType, Schedule.ScheduleFields.arrivalTime, integerType, Schedule.ScheduleFields.departureTime, integerType, Schedule.ScheduleFields.flightDay, dateTime));
-            // stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {})", tableAirplane, , ));
-            // stmt.execute(String.format("CREATE TABLE {] ( {} {}, {} {}, {} {})", tableReservation, Reservation.id, ));
-
-        }catch(SQLException e){
-            System.out.println(String.format("Error : {0}", e));
-        }
-  }
+    }
 
 }

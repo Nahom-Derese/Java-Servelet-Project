@@ -1,4 +1,4 @@
-package Com.Database_Controller;
+package Com.db_controller;
 import lombok.*;
 
 import java.sql.ResultSet;
@@ -17,23 +17,23 @@ public class Flight {
     private Date flightEndTime;
 
     public static class FlightFields {
-        static String flightNumber = "flight_number";
-        static String AirlineId = "airline_id";
-        static String flightPrice = "flight_price";
-        static String flightFrom = "flight_from";
-        static String flightTo = "flight_to";
-        static String flightStartTime = "flight_start_time";
-        static String flightEndTime = "flight_end_time";
+        static String flightNumber = "flightNumber";
+        static String AirlineId = "AirlineId";
+        static String flightPrice = "flightPrice";
+        static String flightFrom = "flightFrom";
+        static String flightTo = "flightTo";
+        static String flightStartTime = "flightStartTime";
+        static String flightEndTime = "flightEndTime";
     }
 
     public Flight(ResultSet DataSet) throws SQLException {
-        this.flightNumber = DataSet.getInt("flight_number");
-        this.flightPrice = DataSet.getDouble("flight_price");
-        this.AirlineId = DataSet.getString("airline_id");
-        this.flightEndTime = DataSet.getDate("flight_end_time");
-        this.flightStartTime = DataSet.getDate("flight_start_time");
-        this.flightTo = DataSet.getString("flight_to");
-        this.flightFrom = DataSet.getString("flight_from");
+        this.flightNumber = DataSet.getInt("flightNumber");
+        this.flightPrice = DataSet.getDouble("flightPrice");
+        this.AirlineId = DataSet.getString("AirlineId");
+        this.flightEndTime = DataSet.getDate("flightEndTime");
+        this.flightStartTime = DataSet.getDate("flightStartTime");
+        this.flightTo = DataSet.getString("flightTo");
+        this.flightFrom = DataSet.getString("flightFrom");
     }
 
     public Flight(){

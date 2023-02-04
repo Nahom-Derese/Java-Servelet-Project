@@ -1,4 +1,4 @@
-package Com.Database_Controller;
+package Com.db_controller;
 import lombok.Data;
 import java.util.Date;
 
@@ -10,9 +10,9 @@ public class Schedule {
     private Flight flight;
 
     public static class ScheduleFields {
-        static String flightDay = "flight_day";
-        static String departureTime = "departure_time";
-        static String arrivalTime = "arrival_time";
+        static String flightDay = "flightDay";
+        static String departureTime = "departureTime";
+        static String arrivalTime = "arrivalTime";
         static String flight = "flight";
     }
 }
