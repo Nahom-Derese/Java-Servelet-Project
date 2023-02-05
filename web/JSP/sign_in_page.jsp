@@ -22,9 +22,7 @@
         <title>Sign In Page</title>
     </head>
     <body>
-        <%
-            Object e = request.getAttribute("Error");
-        %>
+        
     <nav>
       <div class="Logo">
         <img src="Assets/icons8-airport-100.png" alt="logo" class="LOGO" />
@@ -41,6 +39,16 @@
         </div>
           <form method="post" action="sign-in">
           <div class="sign_in_form">
+              <%
+                    Object e = request.getAttribute("Success");
+                    if(e!=null){
+                %>
+                    <div class="success">
+                        User Registered successfully ...
+                    </div>
+                <%
+                    }
+                %>
             <div class="form">
                 <div class="credentials">
                     <div class="Email">
@@ -50,13 +58,16 @@
                         <input type="password" name="password" placeholder="Password *" required>
                       </div>
                 </div>
-                
-                <c:set var = "error" scope = "session" value = "${e}"/>
-                <c:if test = "${error.equals('true')}">
+                <%
+                    Object e = request.getAttribute("Error");
+                    if(e!=null){
+                %>
                     <div class="error">
                         User with provided credential doesn't exist ...
                     </div>
-                </c:if>
+                <%
+                    }
+                %>
               <div class="Checkbox">
                 <input type="checkbox" name="keep" value="1" />
                 <span> Keep me signed in </span>
@@ -65,7 +76,7 @@
                 <span class="check">
                   Selecting this checkbox will keep you signed in for 30 days.
                   If you are using a public computer, uncheck this box to
-                  prevent unauthorized access to your account information.<%=e%>
+                  prevent unauthorized access to your account information.
                 </span><br><br>
                 <span>
                   By signing in, you agree to our
@@ -113,13 +124,12 @@
               <a href=""> Forgot password ?</a>
             </div>
             <div class="create">
-              <span> Don't hava an account? <a href="">Create one</a></span>
+              <span> Don't have an account? <a href="sign-up">Create one</a></span>
             </div>
           </div>
         </form>
       </div>
     </main>
 
-    <!-- <script src="" async defer></script> -->
   </body>
 </html>
