@@ -16,13 +16,9 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+import org.mindrot.jbcrypt.BCrypt;
 
-/**
- *
- * @author Jembere
- */
+
 @WebServlet(name = "SignUpServlet", urlPatterns = {"/sign-up"})
 public class SignUpServlet extends HttpServlet {
 
@@ -33,7 +29,7 @@ public class SignUpServlet extends HttpServlet {
         try {
             request.getRequestDispatcher("/JSP/sign_up_page.jsp").forward(request, response);
         }catch(Exception e){
-            
+            System.out.println("Error");
         }
     }
 
@@ -48,29 +44,45 @@ public class SignUpServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         System.out.println("SignUP POST Endpoint Hit !!");
-        
-        
-        String fname = request.getParameter("fname");
-        String lname = request.getParameter("lname");
         String email = request.getParameter("email");
-        String doB = request.getParameter("dateOfBirth");
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
-        Date birthDate;
-        try {
-            birthDate = (Date) sdf.parse(doB);
+        String fname = request.getParameter("name");
+        String doB = request.getParameter("Dob");
+        String gender = request.getParameter("gender");
+        String BG = request.getParameter("BG");
+        String P_ID = "PID/" + email;
         
+        if(fname.split(" ").length < 2){
+            request.setAttribute("Success", "true");
+            RequestDispatcher rd = request.getRequestDispatcher("./JSP/sign_up_page.jsp");
+            rd.include(request, response);
+        }
+        
+        Date birthDate;
+        
+        try {
+            birthDate = Date.valueOf(doB);
+            System.out.println(birthDate.toString());
             String password = request.getParameter("password");
-            String keep = request.getParameter("keep");
+            Object admin = request.getParameter("admin");
+            
+            if(admin!= null){
+                admin = true;
+            }
+            else{
+                admin = false;
+            }
 
 
             DB db = DB.instance;
 
             Connection connection = db.getconnection();
+            
+            System.out.println(connection);
 
             PreparedStatement pst;
             ResultSet result;
 
-            String sql = "SELECT * FROM `passenger` WHERE email = '" + email + "';";
+            String sql = "SELECT * FROM `patient` WHERE emailId = '" + email + "';";
 
                         try {
                             pst = connection.prepareStatement(sql);
@@ -84,19 +96,18 @@ public class SignUpServlet extends HttpServlet {
                                 rd.include(request, response); 
                             }
                             else{
-                                String insert = "INSERT INTO `passenger`(`firstName`, `lastName`, `password`, `dateOfBirth`, `balance`, `countryOfResidence`, `createdAt`, `updatedAt`, `email`)" + " values (?, ?, ?, ?, ?, ?,?, ?, ?)";
+                                String insert = "INSERT INTO `patient`(`P_ID`, `Name`, `DOB`, `Gender`, `BloodGroup`, `EmailID`, `password`)" + " values (?, ?, ?, ?, ?, ?, ?)";
 
                                 PreparedStatement preparedSt = connection.prepareStatement(insert);
 
-                                preparedSt.setString(1, fname);
-                                preparedSt.setString(2, lname);
-                                preparedSt.setString(9, email);
-                                preparedSt.setString(3, password);
-                                preparedSt.setDate(4, birthDate);
-                                preparedSt.setDouble(5, 200000.0);
-                                preparedSt.setString(6, "Ethiopia");
-                                preparedSt.setDate(7, Date.valueOf(LocalDate.now()));
-                                preparedSt.setDate(8, Date.valueOf(LocalDate.now()));
+                                preparedSt.setString(1, P_ID);
+                                preparedSt.setString(2, fname);
+                                preparedSt.setDate  (3, birthDate);
+                                preparedSt.setString(4, gender);
+                                preparedSt.setString(5, BG);
+                                preparedSt.setString(6, email);
+                                preparedSt.setString(7, password);
+//                                preparedSt.setString(8, address);
 
                                 preparedSt.execute();
                                 request.setAttribute("Success", "true");
@@ -105,9 +116,11 @@ public class SignUpServlet extends HttpServlet {
                             }
 
                         }catch(Exception e){
+                            System.out.println("Connection Problem");
                             System.out.println(e);
                         }
         }catch(Exception e){
+            System.out.println("Date Problem");
             System.out.println(e);
         }
     }
