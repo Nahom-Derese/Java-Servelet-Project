@@ -1,6 +1,8 @@
 
 package Com.servlets;
 
+import Com.auth.Encryption;
+import Com.auth.UserAuthentication;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,7 +10,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(description= "Sign-In Servlet" , urlPatterns = {"/home"})
@@ -18,11 +19,12 @@ public class Home extends HttpServlet {
         
         Cookie cookies[] = request.getCookies();
         for(Cookie c : cookies){
-            if(c.getName().equals("airlineSession")) {
+            if(c.getName().equals("hospitalSession")) {
                c.setMaxAge(0);
                response.addCookie(c);
             }
         }
+        
         
         response.sendRedirect("sign-in");
         
@@ -31,29 +33,28 @@ public class Home extends HttpServlet {
      public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         System.out.println("Home Endpoint Hit !!");
         
-        Cookie cookies[] = request.getCookies();
-        
-        String str = null;
-        
-        for(Cookie c : cookies){
-            if(c.getName().equals("airlineSession")){
-                str = c.getValue();
-            }
+            String decrypted = Auth.processRequest(request);
+            
+            if(decrypted != null){
+                
+                // Setting Attributes
+                request.setAttribute("User", decrypted);
+                request.setAttribute("Page", "home");
+
+                // Dispatchers
+                RequestDispatcher home = request.getRequestDispatcher("/JSP/home.jsp");
+                RequestDispatcher navbar = request.getRequestDispatcher("/JSP/nav_bar.jsp");
+
+                // Include JSPs
+                navbar.include(request, response);
+                home.include(request, response);
+
+            }else{
+                
+                // Log User Out
+                RequestDispatcher rd=request.getRequestDispatcher("/JSP/sign_in_page.jsp"); 
+                rd.forward(request, response);
         }
         
-        RequestDispatcher rd=request.getRequestDispatcher("/JSP/home.jsp"); 
-        rd.include(request, response);
-        System.out.println(request.getAttribute("User"));
-//        HttpSession session = request.getSession();
-//        if (str == null) str = (String) session.getAttribute("User");
-//        
-//        for (String i : str.split("_")) {
-//                response.getWriter().println(i + "<br> <br>");
-//            }
-//        response.setContentType("text/HTML");
-//        response.getWriter().println("<form method=\"post\" action=\"home\">");
-//        response.getWriter().println("<input type=\"logout\" name=\"keep\" value=\"1\" hidden=\"true\"/>");
-//        response.getWriter().println("<button class=\"blob-btn\" type=\"submit\"> Logout </button>");
-//        response.getWriter().println("</form>");
     }
 }
